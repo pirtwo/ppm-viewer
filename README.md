@@ -19,3 +19,11 @@ _clean up build folder:_
 ```
 $ make clean
 ```
+
+_input example:_
+
+![lena 512x512 ppm](./lena-input.png)
+
+_output example:_
+
+![terminal output](./lena-output.png)
