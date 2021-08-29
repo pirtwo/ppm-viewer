@@ -18,79 +18,46 @@ bool PPM::encoder()
 
 bool PPM::decoder(const char *path)
 {
-    std::string w, h, cc;
-    std::ifstream ifs(
-        path, std::ifstream::in | std::ifstream::ate | std::ifstream::binary);
+    std::string id, w, h, cc;
+    int size = 0;
 
-    if (!ifs.is_open())
-        return false;
-
-    int size = ifs.tellg();
-    ifs.seekg(0, ifs.beg);
-
-    if (size == 0)
-        return false;
-
-    auto buffer = std::shared_ptr<unsigned char[]>(
-        new unsigned char[size]);
-
-    ifs.read((char *)&buffer[0], size);
-    ifs.close();
-
-    int sector = 0;
-    for (int i = 0; i < size; i++)
+    try
     {
-        auto token = buffer[i];
+        std::ifstream ifs(
+            path, std::ifstream::in | std::ifstream::ate | std::ifstream::binary);
+        size = ifs.tellg();
 
-        // skip comments
-        if (token == 0x23)
+        if (!ifs.is_open() || size == 0)
+            return false;
+
+        ifs.seekg(0, ifs.beg);
+
+        ifs >> id >> w >> h >> cc;
+
+        if (id != "P6")
+            return false;
+
+        this->id = id;
+        this->w = std::stoi(w);
+        this->h = std::stoi(h);
+        this->cc = std::stoi(cc);
+        ifs.get(); // skip 0x0A
+
+        while (ifs.good())
         {
-            while (i < size)
-            {
-                i++;
-                if (buffer[i] == 0x0A)
-                    break;
-            }
-            continue;
+            RGB pixel;
+            pixel.r = ifs.get();
+            pixel.g = ifs.get();
+            pixel.b = ifs.get();
+            data.push_back(pixel);
         }
 
-        if (sector < 4)
-        {
-            if (token == 0x0A || token == 0x20)
-            {
-                sector++;
-                continue;
-            }
-
-            switch (sector)
-            {
-            case 0:
-                this->id += token;
-                break;
-            case 1:
-                w += token;
-                break;
-            case 2:
-                h += token;
-                break;
-            case 3:
-                cc += token;
-                break;
-            default:
-                break;
-            }
-        }
-        else
-        {
-            data.push_back(token);
-        }
+        return true;
     }
-
-    this->w = std::atoi(w.c_str());
-    this->h = std::atoi(h.c_str());
-    this->cc = std::atoi(cc.c_str());
-
-    return true;
+    catch (const std::exception &e)
+    {
+        return false;
+    }
 }
 
 bool PPM::load(const char *path)
@@ -101,7 +68,6 @@ bool PPM::load(const char *path)
 
 void PPM::view(float scaleX, float scaleY, bool invertColor)
 {
-    unsigned char r, g, b;      // rgb channels
     int ssx = w / (w * scaleX); // sample size x
     int ssy = h / (h * scaleY); // sample size y
 
@@ -115,12 +81,8 @@ void PPM::view(float scaleX, float scaleY, bool invertColor)
             if (x % ssx > 0)
                 continue;
 
-            int byteIdx = y * w * 3 + x * 3;
-
-            r = data[byteIdx];
-            g = data[byteIdx + 1];
-            b = data[byteIdx + 2];
-            int sum = r + g + b;
+            int idx = y * w + x;
+            int sum = data[idx].r + data[idx].g + data[idx].b;
 
             if (!invertColor)
             {
