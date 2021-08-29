@@ -4,6 +4,30 @@
 #include <memory>
 #include <fstream>
 
+auto shader = [](const Pixel &p, int cc, PPM::PrintMode mode)
+{
+    unsigned char chars[] =
+        {'#', '@', '$', '.', ' '};
+
+    unsigned char shades[] =
+        {0xDB, 0xB2, 0xB1, 0xB0, 0x20};
+
+    int idx = (p.r + p.g + p.b) / ((cc * 3) / 5);
+
+    switch (mode)
+    {
+    case PPM::PrintMode::CHAR:
+        std::cout << chars[idx];
+        break;
+    case PPM::PrintMode::SHADE:
+        std::cout << shades[idx];
+        break;
+    default:
+        std::cout << '?';
+        break;
+    }
+};
+
 PPM::PPM()
 {
     //
@@ -85,7 +109,7 @@ bool PPM::load(const char *path)
     return decoder(path);
 }
 
-void PPM::print(float scaleX, float scaleY, bool invertColor)
+void PPM::print(float scaleX, float scaleY, PrintMode mode)
 {
     int ssx = _w / (_w * scaleX); // sample size x
     int ssy = _h / (_h * scaleY); // sample size y
@@ -94,45 +118,15 @@ void PPM::print(float scaleX, float scaleY, bool invertColor)
     {
         if (y % ssy > 0)
             continue;
-
         for (int x = 0; x < _w; x++)
         {
             if (x % ssx > 0)
                 continue;
-
             int idx = y * _w + x;
-            int sum = _data[idx].r + _data[idx].g + _data[idx].b;
-
-            if (!invertColor)
-            {
-                if (sum < 153)
-                    std::cout << "\xDB";
-                else if (sum < 306)
-                    std::cout << "\xB2";
-                else if (sum < 459)
-                    std::cout << "\xB1";
-                else if (sum < 612)
-                    std::cout << "\xB0";
-                else
-                    std::cout << " ";
-            }
-            else
-            {
-                if (sum < 153)
-                    std::cout << " ";
-                else if (sum < 306)
-                    std::cout << "\xB0";
-                else if (sum < 459)
-                    std::cout << "\xB1";
-                else if (sum < 612)
-                    std::cout << "\xB2";
-                else
-                    std::cout << "\xDB";
-            }
+            shader(_data[idx], _cc, mode);
         }
         std::cout << "\r\n";
     }
-
     std::cout << "\r\n";
 }
 

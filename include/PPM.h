@@ -25,11 +25,18 @@ protected:
     std::vector<Pixel> _data; // PPM image data
 
 public:
+    enum class PrintMode
+    {
+        CHAR,
+        SHADE,
+        COLOR
+    };
+
     PPM();
 
     bool load(const char *path);
 
-    void print(float scaleX = 1, float scaleY = 1, bool invertColor = false);
+    void print(float scaleX = 1, float scaleY = 1, PrintMode mode = PrintMode::SHADE);
 
     int getSize();
 
