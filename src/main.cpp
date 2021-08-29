@@ -64,8 +64,8 @@ int main(int argc, char **argv)
     else
     {
         printf("path:%s | width:%d | height:%d | colour components:%d \r\n",
-               path.c_str(), img->w, img->h, img->cc);
-        img->view(scaleX, scaleY, invertColor);
+               path.c_str(), img->getWidth(), img->getHeight(), img->getColorComponent());
+        img->print(scaleX, scaleY, invertColor);
     }
 
     return EXIT_SUCCESS;
