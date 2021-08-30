@@ -7,10 +7,10 @@
 auto shader = [](const Pixel &p, int cc, PPM::PrintMode mode)
 {
     unsigned char chars[] =
-        {'#', '@', '$', '.', ' '};
+        {' ', '.', '*', '%', '@'};
 
     unsigned char shades[] =
-        {0xDB, 0xB2, 0xB1, 0xB0, 0x20};
+        {0x20, 0xB0, 0xB1, 0xB2, 0xDB};
 
     int idx = (p.r + p.g + p.b) / ((cc * 3) / 5);
 
