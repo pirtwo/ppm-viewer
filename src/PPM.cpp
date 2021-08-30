@@ -22,6 +22,10 @@ auto shader = [](const Pixel &p, int cc, PPM::PrintMode mode)
     case PPM::PrintMode::SHADE:
         std::cout << shades[idx];
         break;
+    case PPM::PrintMode::COLOR:
+        printf("\x1b[48;2;%d;%d;%dm%s", p.r, p.g, p.b, " ");
+        printf("\x1b[0m");
+        break;
     default:
         std::cout << '?';
         break;
