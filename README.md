@@ -22,8 +22,8 @@ $ make clean
 
 _input example:_
 
-![lena 512x512 ppm](./lena-input.png)
+![lena 512x512 ppm](./other/lena-input.png)
 
 _output example:_
 
-![terminal output](./lena-output.png)
+![terminal output](./other/lena-output.png)
