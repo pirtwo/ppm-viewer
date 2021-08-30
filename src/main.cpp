@@ -60,6 +60,7 @@ int main(int argc, char **argv)
                 std::cout << "  --sx=[0,1]     scale value of x (must be between 0 and 1), default value is 1 \r\n";
                 std::cout << "  --sy=[0,1]     scale value of y (must be between 0 and 1), default value is 1 \r\n";
                 std::cout << "  --mod=[mode]   image display mode [0=char, 1=shade, 2=color], default value is 1 \r\n";
+                std::cout << "                 shade mode requires encoding cyrillic-IBM855 \r\n";
                 std::cout << "  --help         display help \r\n";
                 return EXIT_SUCCESS;
             }
