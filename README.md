@@ -5,6 +5,7 @@ This is a small terminal application to view PPM image format in the terminal.
 _usage:_
 
 ```
+$ ./build/ppmv --help
 $ ./build/ppmv --path=[img path]
 ```
 
